@@ -2,23 +2,24 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors({
-  origin: "*", // Allow all origins, change this to specific domain in production
-  methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-
+app.use(
+  cors({
+    origin: "*", // Allow all origins, change this to specific domain in production
+    methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 app.use(express.static("public"));
 
-// MongoDB connection
+// MongoDB connection (update with your new cluster's connection string)
 mongoose
   .connect(
     "mongodb+srv://marvydee1:Marvydee.1@serviceguru.mtf9sjz.mongodb.net/?retryWrites=true&w=majority&appName=Serviceguru",
@@ -29,16 +30,11 @@ mongoose
 
 // Service Provider Schema
 const serviceProviderSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  location: {
-    type: { type: String, enum: ["Point"], default: "Point" },
-    coordinates: { type: [Number], required: true },
-  },
-  phone: { type: String, required: true },
-  service: { type: String, required: true },
+  name: String,
+  location: { state: String, lga: String }, // Updated to use state and LGA
+  phone: String,
+  service: String,
 });
-
-serviceProviderSchema.index({ location: "2dsphere" });
 
 const ServiceProvider = mongoose.model(
   "ServiceProvider",
@@ -51,14 +47,14 @@ app.post("/api/register", async (req, res) => {
     const { name, location, phone, service } = req.body;
     const newProvider = new ServiceProvider({
       name,
-      location: { type: "Point", coordinates: [location.lng, location.lat] },
+      location: { state: location.state, lga: location.lga },
       phone,
       service,
     });
     await newProvider.save();
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Error saving service provider:", err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -68,17 +64,22 @@ app.post("/api/search", async (req, res) => {
     const { location, service } = req.body;
     const providers = await ServiceProvider.find({
       service: new RegExp(service, "i"),
-      location: {
-        $geoWithin: {
-          $centerSphere: [[location.lng, location.lat], 10 / 3963.2], // 10 miles radius
-        },
-      },
+      "location.state": location.state,
+      "location.lga": location.lga,
     });
+    if (providers.length === 0) {
+      console.log("No providers found for:", { location, service });
+    }
     res.json({ success: true, providers });
   } catch (err) {
-    console.error(err);
+    console.error("Error during search:", err);
     res.status(500).json({ success: false, message: err.message });
   }
+});
+
+// Serve search.html file
+app.get("/search", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "search.html"));
 });
 
 app.listen(PORT, () => {
