@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -73,6 +74,6 @@ app.post("/api/search", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000/");
+app.listen(PORT, () => {
+  console.log(`Server running at: ${PORT}`);
 });
