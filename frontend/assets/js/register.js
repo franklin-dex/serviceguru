@@ -41,13 +41,16 @@ document
     const location = { state, lga };
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, phone, location, service }),
-      });
+      const response = await fetch(
+        "https://serviceguru.vercel.app/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, phone, location, service }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
