@@ -8,13 +8,36 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://127.0.0.1:5500", // Replace with your actual frontend URL
+    methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow credentials like cookies (if needed)
+  })
+);
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500"); // Replace with your actual frontend URL
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true); // If you need to allow credentials like cookies
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200); // Respond to preflight request
+  } else {
+    next();
+  }
+});
+
 app.use(express.static("public"));
 
 // MongoDB connection
 mongoose
   .connect(
-    "mongodb+srv://marvydee:Marvydee.1@serviceguru.rbxhqey.mongodb.net/?retryWrites=true&w=majority&appName=Serviceguru",
+    "mongodb+srv://marvydee1:Marvydee.1@serviceguru.mtf9sjz.mongodb.net/?retryWrites=true&w=majority&appName=Serviceguru",
     {}
   )
   .then(() => console.log("MongoDB connected"))
