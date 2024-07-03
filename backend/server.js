@@ -8,7 +8,13 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: "*", // Allow all origins, change this to specific domain in production
+  methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
 
 app.use(express.static("public"));
 
