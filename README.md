@@ -118,9 +118,8 @@ We welcome contributions to ServiceGuru! To contribute:
 
 Here are some related projects that might interest you:
 
-- [ServiceHub](https://github.com/related-project-1): Another platform for connecting service providers and users.
-- [FindMyPro](https://github.com/related-project-2): A project that helps users find professional services in their area.
-- [ProConnect](https://github.com/related-project-3): A similar project focusing on connecting users with local service providers.
+- [Yelp](https://www.yelp.com/): Another platform for connecting service providers and users.
+- [TaskRabbit](https://www.taskrabbit.com/): A project that helps users find professional services in their area.
 
 
 
