@@ -32,7 +32,7 @@ mongoose
 const serviceProviderSchema = new mongoose.Schema({
   name: String,
   location: { state: String, lga: String }, // Updated to use state and LGA
-  phone: String,
+  phone: number,
   service: String,
 });
 
