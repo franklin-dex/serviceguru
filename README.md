@@ -2,7 +2,7 @@
 ![Logo](https://i.postimg.cc/kXqfvy1g/logo-white.png)
 
 
-# ServiceGuru
+# ServiceGuru.
 
 ## Table of Contents
 
